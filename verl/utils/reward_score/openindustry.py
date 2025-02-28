@@ -131,8 +131,9 @@ def compute_score(solution_str, ground_truth, method='strict', format_reward=1, 
         Total score (sum of format and answer rewards)
     """
 
-    gt_industry = eval(ground_truth.get('ground_truth', ''))
-    do_print = random.randint(1, 64) == 1
+    gt_industry = eval(ground_truth)
+    do_print = 1
+    # do_print = random.randint(1, 64) == 1
 
     if do_print:
         print("\n" + "=" * 80)
@@ -164,11 +165,11 @@ def compute_score(solution_str, ground_truth, method='strict', format_reward=1, 
                 answer_score = 2
                 if do_print:
                     print("  Content validation: FULL MATCH")
-            elif pred_industry['first_industry'] == gt_industry['first_industry']:
+            elif pred_industry.get('first_industry', '') == gt_industry['first_industry']:
                 answer_score = 0.5
                 if do_print:
                     print("  Content validation: first industry MATCH, second industry MISMATCH")
-            elif pred_industry['second_industry'] == gt_industry['second_industry']:
+            elif pred_industry.get('second_industry', '') == gt_industry['second_industry']:
                 answer_score = 1.5
                 if do_print:
                     print("  Content validation: second industry MATCH, first industry MISMATCH")
