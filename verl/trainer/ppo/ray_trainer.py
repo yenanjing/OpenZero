@@ -281,6 +281,26 @@ def compute_timing_metrics(batch, timing_raw):
     }
 
 
+def compute_reward_metrics(batch):
+    reward_tensor = batch.batch['token_level_scores'].sum(-1)
+
+    reward_metrics = {}
+    reward_metrics["reward/mean"] = torch.mean(reward_tensor).detach().item()
+    # Calculate all_correct ratio (value == 3)
+    all_correct = torch.sum(reward_tensor == 3).float() / reward_tensor.numel()
+    reward_metrics["reward/all_correct_ratio"] = all_correct.detach().item()
+    # Calculate format_error ratio (value == -0.5)
+    format_error = torch.sum(reward_tensor == -0.5).float() / reward_tensor.numel()
+    reward_metrics["reward/format_error_ratio"] = format_error.detach().item()
+    # Calculate first_correct answer ratio (value == 1.5 or 3)
+    first_correct = torch.sum((reward_tensor == 1.5) | (reward_tensor == 3)).float() / reward_tensor.numel()
+    reward_metrics["reward/first_correct_ratio"] = first_correct.detach().item()
+    # Calculate second_correct answer ratio (value == 2.5 or 3)
+    second_correct = torch.sum((reward_tensor == 2.5) | (reward_tensor == 3)).float() / reward_tensor.numel()
+    reward_metrics["reward/second_correct_ratio"] = second_correct.detach().item()
+
+    return reward_metrics
+
 @contextmanager
 def _timer(name: str, timing_raw: Dict[str, float]):
     with Timer(name=name, logger=None) as timer:
@@ -657,6 +677,10 @@ class RayPPOTrainer(object):
                             actor_output = self.actor_rollout_wg.update_actor(batch)
                         actor_output_metrics = reduce_metrics(actor_output.meta_info['metrics'])
                         metrics.update(actor_output_metrics)
+
+                    # reward
+                    reward_metrics = compute_reward_metrics(batch)
+                    metrics.update(reward_metrics)
 
                     # validate
                     if self.val_reward_fn is not None and self.config.trainer.test_freq > 0 and \
