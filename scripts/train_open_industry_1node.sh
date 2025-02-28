@@ -1,26 +1,12 @@
 set -x
+ray stop --force
 export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
 export NCCL_DEBUG=INFO
-export NCCL_ALGO=ring
-export NCCL_PROTO=ucp
-export NCCL_SOCKET_IFNAME=bond1
-export NCCL_MIN_NRINGS=1
-export NCCL_IB_GID_INDEX=3
-export GLOO_SOCKET_IFNAME=bond1
 
-
-
-
-export HOME=/apdcephfs_cq11/share_2973545/wenweiwwli/
-
-export http_proxy="http://star-proxy.oa.com:3128"
-export https_proxy="http://star-proxy.oa.com:3128"
-export PATH=/usr/local/gcc/bin:$PATH
-export PATH=/root/miniconda3/envs/zero/bin:$PATH
 export VLLM_ATTENTION_BACKEND=XFORMERS
 DATA_DIR=data/open_industry/v1
 MODEL_PATH=~/models/qwen2.5-7b
-ROLLOUT_TP_SIZE=4
+ROLLOUT_TP_SIZE=2
 n_gpus_per_node=8
 nnodes=1
 experiment_name='1node-Qwen-7B'
@@ -36,8 +22,9 @@ python3 -m verl.trainer.main_ppo \
     actor_rollout_ref.model.path=$MODEL_PATH\
     actor_rollout_ref.actor.optim.lr=3e-7 \
     actor_rollout_ref.model.use_remove_padding=True \
-    actor_rollout_ref.actor.ppo_mini_batch_size=64 \
-    actor_rollout_ref.actor.ppo_micro_batch_size=8 \
+    actor_rollout_ref.actor.ppo_mini_batch_size=2 \
+    actor_rollout_ref.actor.ppo_micro_batch_size=2 \
+    actor_rollout_ref.actor.ulysses_sequence_parallel_size=4 \
     actor_rollout_ref.actor.use_kl_loss=True \
     actor_rollout_ref.actor.kl_loss_coef=0.001 \
     actor_rollout_ref.actor.kl_loss_type=low_var_kl \
@@ -45,13 +32,13 @@ python3 -m verl.trainer.main_ppo \
     actor_rollout_ref.actor.fsdp_config.param_offload=True \
     actor_rollout_ref.actor.fsdp_config.grad_offload=True \
     actor_rollout_ref.actor.fsdp_config.optimizer_offload=True \
-    actor_rollout_ref.rollout.log_prob_micro_batch_size=1 \
+    actor_rollout_ref.rollout.log_prob_micro_batch_size=8 \
     actor_rollout_ref.rollout.tensor_model_parallel_size=$ROLLOUT_TP_SIZE \
     actor_rollout_ref.rollout.name=vllm \
-    actor_rollout_ref.rollout.gpu_memory_utilization=0.4 \
-    actor_rollout_ref.rollout.n=8 \
+    actor_rollout_ref.rollout.gpu_memory_utilization=0.2 \
+    actor_rollout_ref.rollout.n=2 \
     actor_rollout_ref.rollout.max_num_batched_tokens=null \
-    actor_rollout_ref.ref.log_prob_micro_batch_size=1 \
+    actor_rollout_ref.ref.log_prob_micro_batch_size=8 \
     actor_rollout_ref.ref.fsdp_config.param_offload=True \
     algorithm.kl_ctrl.kl_coef=0.001 \
     +trainer.val_before_train=False \

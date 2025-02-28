@@ -412,17 +412,14 @@ class ActorRolloutRefWorker(Worker):
                                      load_grad=self._is_offload_grad)
 
         prompts.batch = prompts.batch.cuda()
-        print("cccccc")
         meta_info = {'eos_token_id': self.tokenizer.eos_token_id, 'pad_token_id': self.tokenizer.pad_token_id}
         prompts.meta_info.update(meta_info)
         with self.rollout_sharding_manager:
-            print("dddddd")
-            log_gpu_memory_usage('After entering rollout sharding manager', logger=logger)
+            log_gpu_memory_usage('After entering rollout sharding manager')
 
             prompts = self.rollout_sharding_manager.preprocess_data(prompts)
             output = self.rollout.generate_sequences(prompts=prompts)
-            print("eeeeee")
-            log_gpu_memory_usage('After rollout generation', logger=logger)
+            log_gpu_memory_usage('After rollout generation')
 
             output = self.rollout_sharding_manager.postprocess_data(output)
 

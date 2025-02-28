@@ -191,7 +191,6 @@ class DataParallelPPOActor(BasePPOActor):
                 _, log_probs = self._forward_micro_batch(micro_batch, temperature=temperature)
             log_probs_lst.append(log_probs)
         log_probs = torch.concat(log_probs_lst, dim=0)
-
         if use_dynamic_bsz:
             indices = list(itertools.chain.from_iterable(indices))
             assert len(indices) == log_probs.size(0), f"{len(indices)} vs. {log_probs.size()}"
