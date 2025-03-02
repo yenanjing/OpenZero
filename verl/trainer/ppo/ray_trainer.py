@@ -458,6 +458,14 @@ class RayPPOTrainer(object):
         metric_dict = {}
         for data_source, rewards in data_source_reward.items():
             metric_dict[f'val/test_score/{data_source}'] = np.mean(rewards)
+            all_correct = np.sum(rewards == 3).astype(float) / rewards.size
+            metric_dict["val/all_correct_ratio"] = all_correct
+
+            first_correct = np.sum((rewards == 1.5) | (rewards == 3)).astype(float) / rewards.size
+            metric_dict["val/first_correct_ratio"] = first_correct
+
+            second_correct = np.sum((rewards == 2.5) | (rewards == 3)).astype(float) / rewards.size
+            metric_dict["val/second_correct_ratio"] = second_correct
 
         return metric_dict
 
