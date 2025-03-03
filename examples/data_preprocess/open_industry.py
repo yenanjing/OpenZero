@@ -14,15 +14,15 @@ import yaml
 def make_prefix(dp, prompt_t, template_type):
     question = prompt_t.replace("{query}", dp['问题描述'])
     if template_type == 'base':
-        prefix = f"""The user asks a question, and the Assistant solves it.The assistant first thinks about the reasoning process in the mind and then provides the user with the final answer. The reasoning process and answer are enclosed within <think> </think> and <answer> </answer> tags, respectively, i.e., <think> reasoning process here </think><answer> answer here </answer>. Now the user asks you to solve a industry classification problem for advertising account opening. After thinking, when you finally reach a conclusion, clearly state the primary industry and the secondary industry for account opening and give the reasons for choosing that particular industry within <answer> </answer> tags. For example, <answer> 您好呀，消防应急照明建议开户行业可以选择一级行业“工业工程和安保”下面的“交通消防”二级行业。原因如下：\n1. 消防应急照明属于防火救灾设备，符合“交通消防”行业中“制造与经销用于灭火、防火以及火灾事故救灾的器材”的定义。\n2. 行业定位与消防应急照明作为专业消防器材的功能作用契合。\n3. 涵盖更多目前客户，利于推广。\n\nTips：可以提供更加详细的推广产品信息，来获取更加准确的推广行业建议，最终结果请以开户审核为准。 </answer>.\n\nUser:{question}\nAssistant: <think>"""
+        prefix = f"""The user asks a question, and the Assistant solves it.The assistant first thinks about the reasoning process in the mind and then provides the user with the final answer. The reasoning process and answer are enclosed within <think> </think> and <answer> </answer> tags, respectively, i.e., <think> reasoning process here </think><answer> answer here </answer>. Now the user asks you to solve a industry classification problem for advertising account opening. After thinking, when you finally reach a conclusion, clearly state the primary industry and the secondary industry for account opening within <answer> </answer> tags. For example, <answer>一级行业：食品；二级行业：营养及健康食品</answer>.\n\nUser:{question}\nAssistant: <think>"""
     elif template_type == 'qwen-instruct':
-        prefix = f"""<|im_start|>system\nYou are a helpful assistant. The assistant first thinks about the reasoning process in the mind and then provides the user with the answer. The reasoning process and answer are enclosed within <think> </think> and<answer> </answer> tags, respectively, i.e., <think> reasoning process here </think><answer> answer here </answer>.  Now the user asks you to solve a industry classification problem for advertising account opening. After thinking, when you finally reach a conclusion, clearly state the primary industry and the secondary industry for account opening and give the reasons for choosing that particular industry within <answer> </answer> tags. i.e., <answer> 您好呀，消防应急照明建议开户行业可以选择一级行业“工业工程和安保”下面的“交通消防”二级行业。原因如下：\n1. 消防应急照明属于防火救灾设备，符合“交通消防”行业中“制造与经销用于灭火、防火以及火灾事故救灾的器材”的定义。\n2. 行业定位与消防应急照明作为专业消防器材的功能作用契合。\n3. 涵盖更多目前客户，利于推广。\n\nTips：可以提供更加详细的推广产品信息，来获取更加准确的推广行业建议，最终结果请以开户审核为准。 </answer>.\n<|im_end|>\n<|im_start|>user\n{question}\n<|im_end|>\n<|im_start|>assistant\n<think>"""
+        prefix = f"""<|im_start|>system\nYou are a helpful assistant. The assistant first thinks about the reasoning process in the mind and then provides the user with the answer. The reasoning process and answer are enclosed within <think> </think> and<answer> </answer> tags, respectively, i.e., <think> reasoning process here </think><answer> answer here </answer>.  Now the user asks you to solve a industry classification problem for advertising account opening. After thinking, when you finally reach a conclusion, clearly state the primary industry and the secondary industry for account opening and give the reasons for choosing that particular industry within <answer> </answer> tags. i.e., <answer>一级行业：食品；二级行业：营养及健康食品</answer>.\n<|im_end|>\n<|im_start|>user\n{question}\n<|im_end|>\n<|im_start|>assistant\n<think>"""
     return prefix
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--local_dir', default='/Users/wenweili/PycharmProjects/OpenZero/data/open_industry/v1')
+    parser.add_argument('--local_dir', default='/Users/wenweili/PycharmProjects/OpenZero/data/open_industry/v2')
     parser.add_argument('--hdfs_dir', default=None)
     parser.add_argument('--train_data_path', default='/Users/wenweili/Desktop/AI客服/开户行业/妙问开户行业数据集_v3_train.xlsx')
     parser.add_argument('--test_data_path', default='/Users/wenweili/Desktop/AI客服/开户行业/妙问开户行业数据集_v3_test.xlsx')
@@ -57,7 +57,7 @@ if __name__ == '__main__':
     current_dir = os.getcwd()
 
     # 拼接 prompt.yaml 文件的路径
-    yaml_file_path = os.path.join(current_dir, "prompt.yaml")
+    yaml_file_path = os.path.join(current_dir, "prompt_hy.yaml")
 
     # 读取并解析 YAML 文件
     with open(yaml_file_path, "r", encoding="utf-8") as file:
