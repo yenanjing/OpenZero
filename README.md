@@ -1,5 +1,4 @@
-# TinyZero
-![image](cover.png)
+# OpenZero
 
 
 ## Installation
