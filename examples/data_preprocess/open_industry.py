@@ -22,10 +22,10 @@ def make_prefix(dp, prompt_t, template_type):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--local_dir', default='/Users/wenweili/PycharmProjects/OpenZero/data/open_industry/v2')
+    parser.add_argument('--local_dir', default='/Users/wenweili/PycharmProjects/OpenZero/data/open_industry/v3')
     parser.add_argument('--hdfs_dir', default=None)
-    parser.add_argument('--train_data_path', default='/Users/wenweili/Desktop/AI客服/开户行业/妙问开户行业数据集_v3_train.xlsx')
-    parser.add_argument('--test_data_path', default='/Users/wenweili/Desktop/AI客服/开户行业/妙问开户行业数据集_v3_test.xlsx')
+    parser.add_argument('--train_data_path', default='/Users/wenweili/Desktop/AI客服/开户行业/妙问开户行业数据集_v4_train.xlsx')
+    parser.add_argument('--test_data_path', default='/Users/wenweili/Desktop/AI客服/开户行业/妙问开户行业数据集_v4_test.xlsx')
 
     parser.add_argument('--template_type', type=str, default='base')
 
