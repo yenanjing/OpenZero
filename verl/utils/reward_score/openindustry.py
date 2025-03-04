@@ -19,7 +19,7 @@ def parse_model_answer(answer_text: str, do_print: bool) -> Optional[Dict[str, s
         print("\n[Model Answer Parsing]")
 
     try:
-        pattern = r'一级行业：(.*?)；'
+        pattern = r'一级行业：(.+?)；'
         match = re.search(pattern, answer_text)
         ind = match.group(1) if match.group(1) else match.group(2)
         industries_dict["first_industry"] = ind.strip()
@@ -28,7 +28,7 @@ def parse_model_answer(answer_text: str, do_print: bool) -> Optional[Dict[str, s
             print(f"  [Error] Missing identification for first industry")
 
     try:
-        pattern = r'；二级行业：(.*?)'
+        pattern = r'；二级行业：(.+?)$'
         match = re.search(pattern, answer_text)
         ind = match.group(1) if match.group(1) else match.group(2)
         industries_dict["second_industry"] = ind.strip()
