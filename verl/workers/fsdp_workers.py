@@ -56,6 +56,7 @@ class ActorRolloutRefWorker(Worker):
         self.config = config
         import torch.distributed
         if not torch.distributed.is_initialized():
+            print("initializing process group")
             torch.distributed.init_process_group(backend="nccl", timeout=timedelta(seconds=1800))
 
         # build device mesh for FSDP
