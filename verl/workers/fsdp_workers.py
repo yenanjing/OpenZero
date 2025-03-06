@@ -55,9 +55,17 @@ class ActorRolloutRefWorker(Worker):
         super().__init__()
         self.config = config
         import torch.distributed
+        timeout = timedelta(seconds=1800)
+
         if not torch.distributed.is_initialized():
             print("initializing process group")
-            torch.distributed.init_process_group(backend="nccl", timeout=timedelta(seconds=1800))
+            torch.distributed.init_process_group(backend="nccl", timeout=timeout)
+        else:
+            print("process group already initialized, destroying and reinitializing")
+            # 销毁现有进程组
+            torch.distributed.destroy_process_group()
+            # 重新初始化进程组
+            torch.distributed.init_process_group(backend="nccl", timeout=timeout)
 
         # build device mesh for FSDP
         world_size = torch.distributed.get_world_size()
