@@ -187,6 +187,10 @@ def main_task(config):
                             ray_worker_group_cls=ray_worker_group_cls,
                             reward_fn=reward_fn,
                             val_reward_fn=val_reward_fn)
+    from datetime import timedelta
+    if not torch.distributed.is_initialized():
+        print("initializing process group in main_task")
+        torch.distributed.init_process_group(backend="nccl", timeout=timedelta(seconds=1800))
     trainer.init_workers()
     trainer.fit()
 
