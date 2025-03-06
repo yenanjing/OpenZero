@@ -55,6 +55,8 @@ class ActorRolloutRefWorker(Worker):
         super().__init__()
         self.config = config
         import torch.distributed
+        if torch.distributed.is_initialized():
+            print("gg is_initialized")
         timeout = timedelta(seconds=1800)
         if not torch.distributed.is_initialized():
             print("initializing process group")
