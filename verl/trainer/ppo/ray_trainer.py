@@ -326,6 +326,9 @@ class RayPPOTrainer(object):
 
         # assert torch.cuda.is_available(), 'cuda must be available on driver'
 
+        import torch.distributed
+        if torch.distributed.is_initialized():
+            print("a is_initialized")
         self.tokenizer = tokenizer
         self.config = config
         self.reward_fn = reward_fn
@@ -473,6 +476,9 @@ class RayPPOTrainer(object):
 
     def init_workers(self):
         """Init resource pool and worker group"""
+        import torch.distributed
+        if torch.distributed.is_initialized():
+            print("b is_initialized")
         self.resource_pool_manager.create_resource_pool()
 
         self.resource_pool_to_cls = {pool: {} for pool in self.resource_pool_manager.resource_pool_dict.values()}
@@ -480,9 +486,13 @@ class RayPPOTrainer(object):
         # create actor and rollout
         if self.hybrid_engine:
             resource_pool = self.resource_pool_manager.get_resource_pool(Role.ActorRollout)
+            if torch.distributed.is_initialized():
+                print("c is_initialized")
             actor_rollout_cls = RayClassWithInitArgs(cls=self.role_worker_mapping[Role.ActorRollout],
                                                      config=self.config.actor_rollout_ref,
                                                      role='actor_rollout')
+            if torch.distributed.is_initialized():
+                print("d is_initialized")
             self.resource_pool_to_cls[resource_pool]['actor_rollout'] = actor_rollout_cls
         else:
             raise NotImplementedError
@@ -541,7 +551,11 @@ class RayPPOTrainer(object):
 
         # we should create rollout at the end so that vllm can have a better estimation of kv cache memory
         self.actor_rollout_wg = all_wg['actor_rollout']
+        if torch.distributed.is_initialized():
+            print("e is_initialized")
         self.actor_rollout_wg.init_model()
+        if torch.distributed.is_initialized():
+            print("f is_initialized")
 
     def _save_checkpoint(self):
         actor_local_path = os.path.join(self.config.trainer.default_local_dir, 'actor',
