@@ -4,7 +4,7 @@ export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
 export NCCL_DEBUG=INFO
 
 export VLLM_ATTENTION_BACKEND=XFORMERS
-DATA_DIR=data/open_industry/v1
+DATA_DIR=data/open_industry/v2
 MODEL_PATH=/apdcephfs_cq11/share_2973545/wenweiwwli/projects/OpenZero/checkpoints/GRPO_OPEN_INDUSTRY/1node-Qwen-7B/actor/global_step_990
 ROLLOUT_TP_SIZE=2
 n_gpus_per_node=8
@@ -28,9 +28,9 @@ python3 -m verl.trainer.main_ppo \
     actor_rollout_ref.actor.use_kl_loss=True \
     actor_rollout_ref.actor.kl_loss_coef=0.001 \
     actor_rollout_ref.actor.kl_loss_type=low_var_kl \
-    +actor_rollout_ref.actor.dtype=bf16 \
-    +actor_rollout_ref.actor.fsdp_config.dtype=bf16 \
-    actor_rollout_ref.rollout.dtype=bf16 \
+    +actor_rollout_ref.actor.dtype=bfloat16 \
+    +actor_rollout_ref.actor.fsdp_config.dtype=bfloat16 \
+    actor_rollout_ref.rollout.dtype=bfloat16 \
     actor_rollout_ref.model.enable_gradient_checkpointing=True \
     actor_rollout_ref.actor.fsdp_config.param_offload=True \
     actor_rollout_ref.actor.fsdp_config.grad_offload=True \

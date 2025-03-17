@@ -55,15 +55,13 @@ class ActorRolloutRefWorker(Worker):
         super().__init__()
         self.config = config
         import torch.distributed
-        if torch.distributed.is_initialized():
-            print("gg is_initialized")
-        timeout = timedelta(seconds=1800)
         if not torch.distributed.is_initialized():
             print("initializing process group")
-            torch.distributed.init_process_group(backend="nccl", timeout=timeout)
+            torch.distributed.init_process_group(backend="nccl")
 
         # build device mesh for FSDP
         world_size = torch.distributed.get_world_size()
+        # print(world_size)
         from torch.distributed.device_mesh import init_device_mesh
         # TODO(sgm): support FSDP hybrid shard for larger model
         self.device_mesh = init_device_mesh('cuda', mesh_shape=(world_size,), mesh_dim_names=['fsdp'])
@@ -191,8 +189,8 @@ class ActorRolloutRefWorker(Worker):
             buffer_dtype = PrecisionType.to_dtype(mixed_precision_config.get('buffer_dtype', 'fp32'))
         else:
             param_dtype = torch.bfloat16
-            reduce_dtype = torch.bfloat16
-            buffer_dtype = torch.bfloat16
+            reduce_dtype = torch.float32
+            buffer_dtype = torch.float32
 
         mixed_precision = MixedPrecision(param_dtype=param_dtype, reduce_dtype=reduce_dtype, buffer_dtype=buffer_dtype)
 

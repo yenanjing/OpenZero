@@ -4,12 +4,12 @@ export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
 export NCCL_DEBUG=INFO
 
 export VLLM_ATTENTION_BACKEND=XFORMERS
-DATA_DIR=data/open_industry/v2
+DATA_DIR=data/open_industry/v3
 MODEL_PATH=~/models/qwen2.5-7b
-ROLLOUT_TP_SIZE=2
+ROLLOUT_TP_SIZE=1
 n_gpus_per_node=8
 nnodes=1
-experiment_name='1node-Qwen-7B-v2'
+experiment_name='1node-Qwen-7B-bf16-v3-tp1-sp4-roll2'
 
 python3 -m verl.trainer.main_ppo \
     algorithm.adv_estimator=grpo \
@@ -22,12 +22,15 @@ python3 -m verl.trainer.main_ppo \
     actor_rollout_ref.model.path=$MODEL_PATH\
     actor_rollout_ref.actor.optim.lr=3e-7 \
     actor_rollout_ref.model.use_remove_padding=True \
-    actor_rollout_ref.actor.ppo_mini_batch_size=16 \
+    actor_rollout_ref.actor.ppo_mini_batch_size=2 \
     actor_rollout_ref.actor.ppo_micro_batch_size=2 \
     actor_rollout_ref.actor.ulysses_sequence_parallel_size=4 \
     actor_rollout_ref.actor.use_kl_loss=True \
     actor_rollout_ref.actor.kl_loss_coef=0.001 \
     actor_rollout_ref.actor.kl_loss_type=low_var_kl \
+    +actor_rollout_ref.actor.dtype=bfloat16 \
+    +actor_rollout_ref.actor.fsdp_config.dtype=bfloat16 \
+    actor_rollout_ref.rollout.dtype=bfloat16 \
     actor_rollout_ref.model.enable_gradient_checkpointing=True \
     actor_rollout_ref.actor.fsdp_config.param_offload=True \
     actor_rollout_ref.actor.fsdp_config.grad_offload=True \
@@ -41,7 +44,7 @@ python3 -m verl.trainer.main_ppo \
     actor_rollout_ref.ref.log_prob_micro_batch_size=8 \
     actor_rollout_ref.ref.fsdp_config.param_offload=True \
     algorithm.kl_ctrl.kl_coef=0.001 \
-    +trainer.val_before_train=False \
+    +trainer.val_before_train=True \
     trainer.critic_warmup=0 \
     trainer.logger=['wandb'] \
     trainer.project_name='GRPO_OPEN_INDUSTRY' \
@@ -51,4 +54,4 @@ python3 -m verl.trainer.main_ppo \
     trainer.default_hdfs_dir=null \
     trainer.save_freq=30 \
     trainer.test_freq=10 \
-    trainer.total_epochs=5 $@ 2>&1 | tee 7b_open_industry.log
+    trainer.total_epochs=5 $@ 2>&1 | tee 7b_open_industry_debug.log
