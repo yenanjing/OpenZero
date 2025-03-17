@@ -293,10 +293,10 @@ def compute_reward_metrics(batch):
     format_error = torch.sum(reward_tensor == -0.5).float() / reward_tensor.numel()
     reward_metrics["reward/format_error_ratio"] = format_error.detach().item()
     # Calculate first_correct answer ratio (value == 1.5 or 3)
-    first_correct = torch.sum((reward_tensor == 1.5) | (reward_tensor == 3)).float() / reward_tensor.numel()
+    first_correct = torch.sum((reward_tensor == 2.5) | (reward_tensor == 3)).float() / reward_tensor.numel()
     reward_metrics["reward/first_correct_ratio"] = first_correct.detach().item()
     # Calculate second_correct answer ratio (value == 2.5 or 3)
-    second_correct = torch.sum((reward_tensor == 2.5) | (reward_tensor == 3)).float() / reward_tensor.numel()
+    second_correct = torch.sum((reward_tensor == 0.5) | (reward_tensor == 3)).float() / reward_tensor.numel()
     reward_metrics["reward/second_correct_ratio"] = second_correct.detach().item()
 
     return reward_metrics
@@ -466,10 +466,10 @@ class RayPPOTrainer(object):
                all_correct = np.sum(rewards == 3).astype(float) / len(rewards)
                metric_dict[f"val/{data_source}/all_correct_ratio"] = all_correct
 
-               first_correct = np.sum((rewards == 1.5) | (rewards == 3)).astype(float) / len(rewards)
+               first_correct = np.sum((rewards == 2.5) | (rewards == 3)).astype(float) / len(rewards)
                metric_dict[f"val/{data_source}/first_correct_ratio"] = first_correct
 
-               second_correct = np.sum((rewards == 2.5) | (rewards == 3)).astype(float) / len(rewards)
+               second_correct = np.sum((rewards == 0.5) | (rewards == 3)).astype(float) / len(rewards)
                metric_dict[f"val/{data_source}/second_correct_ratio"] = second_correct
 
         return metric_dict
