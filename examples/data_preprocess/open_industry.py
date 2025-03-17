@@ -61,7 +61,7 @@ if __name__ == '__main__':
     current_dir = os.getcwd()
 
     # 拼接 prompt.yaml 文件的路径
-    yaml_file_path = os.path.join(current_dir, "prompt_hy.yaml")
+    yaml_file_path = os.path.join(current_dir, "prompt_distill.yaml")
 
     # 读取并解析 YAML 文件
     with open(yaml_file_path, "r", encoding="utf-8") as file:
