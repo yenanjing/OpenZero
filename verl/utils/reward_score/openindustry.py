@@ -58,14 +58,20 @@ def extract_solution(solution_str: str) -> Tuple[Optional[str], str]:
         return None, solution_str
 
     # Extract final answer using XML-style tags
-    answer_pattern = r'<answer>(.*?)</answer>'
-    matches = list(re.finditer(answer_pattern, processed_str, re.DOTALL))
+    if "<answer>" in solution_str:
+        answer_pattern = r'<answer>(.*?)</answer>'
+        matches = list(re.finditer(answer_pattern, processed_str, re.DOTALL))
 
-    if not matches:
-        print("[Error] No valid answer tags found")
+        if not matches:
+            print("[Error] No valid answer tags found")
+            return None, processed_str
+        final_answer = matches[-1].group(1).strip()
+    elif "</think>" in solution_str:
+        final_answer = processed_str.split("/think")[1].strip()
+    else:
+        print("[Error] No valid answer or think tags found")
         return None, processed_str
 
-    final_answer = matches[-1].group(1).strip()
     return final_answer, processed_str
 
 
@@ -117,6 +123,50 @@ def validate_response_structure(processed_str: str, do_print: bool) -> bool:
     return validation_passed
 
 
+def validate_response_structure_ds(processed_str: str, do_print: bool) -> bool:
+    """Performs comprehensive validation of response structure.
+
+    Args:
+        processed_str: Processed response string from the model
+        do_print: Boolean indicating whether to print debug information
+
+    Returns:
+        Boolean indicating whether all formatting requirements are met
+    """
+    if do_print:
+        print("\n[Structure Validation]")
+    validation_passed = True
+
+    # Check required tags
+    tags = {
+        'think_start': ('<think>', 1),
+        'think_end': ('</think>', 1),
+    }
+
+    positions = {}
+    for tag_name, (tag_str, expected_count) in tags.items():
+        count = processed_str.count(tag_str)
+        positions[tag_name] = pos = processed_str.find(tag_str)
+
+        if do_print:
+            print(f"  {tag_str}: count={count}, position={pos}")
+
+        if count != expected_count:
+            if do_print:
+                print(f"  [Error] {tag_str} appears {count} times (expected {expected_count})")
+            validation_passed = False
+
+    # Verify tag order
+    if (positions['think_start'] > positions['think_end']):
+        if do_print:
+            print("  [Error] Incorrect tag order: Expected <think>...</think>")
+        validation_passed = False
+    elif do_print:
+        print("  Tag sequence validation passed")
+
+    return validation_passed
+
+
 def compute_score(solution_str, ground_truth, method='strict', format_reward=1, answer_reward=1.):
     """The scoring function for open_industry task.
 
@@ -146,7 +196,11 @@ def compute_score(solution_str, ground_truth, method='strict', format_reward=1, 
     if do_print:
         print(f"\n[Model Response]\n{processed_str}")
 
-    format_correct = validate_response_structure(processed_str, do_print)
+    if "<answer>" in processed_str:
+        format_correct = validate_response_structure(processed_str, do_print)
+    else:
+        format_correct = validate_response_structure_ds(processed_str, do_print)
+
     format_score = format_reward if format_correct else -abs(format_reward)
 
     if do_print:
@@ -166,11 +220,11 @@ def compute_score(solution_str, ground_truth, method='strict', format_reward=1, 
                 if do_print:
                     print("  Content validation: FULL MATCH")
             elif pred_industry.get('first_industry', '') == gt_industry['first_industry']:
-                answer_score = 0.5
+                answer_score = 1.5
                 if do_print:
                     print("  Content validation: first industry MATCH, second industry MISMATCH")
             elif pred_industry.get('second_industry', '') == gt_industry['second_industry']:
-                answer_score = 1.5
+                answer_score = -0.5
                 if do_print:
                     print("  Content validation: second industry MATCH, first industry MISMATCH")
             else:

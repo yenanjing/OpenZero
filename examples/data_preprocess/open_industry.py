@@ -17,17 +17,21 @@ def make_prefix(dp, prompt_t, template_type):
         prefix = f"""The user asks a question, and the Assistant solves it.The assistant first thinks about the reasoning process in the mind and then provides the user with the final answer. The reasoning process and answer are enclosed within <think> </think> and <answer> </answer> tags, respectively, i.e., <think> reasoning process here </think><answer> answer here </answer>. Now the user asks you to solve a industry classification problem for advertising account opening. After thinking, when you finally reach a conclusion, clearly state the primary industry and the secondary industry for account opening within <answer> </answer> tags. For example, <answer>一级行业：食品；二级行业：营养及健康食品</answer>.\n\nUser:{question}\nAssistant: <think>"""
     elif template_type == 'qwen-instruct':
         prefix = f"""<|im_start|>system\nYou are a helpful assistant. The assistant first thinks about the reasoning process in the mind and then provides the user with the answer. The reasoning process and answer are enclosed within <think> </think> and<answer> </answer> tags, respectively, i.e., <think> reasoning process here </think><answer> answer here </answer>.  Now the user asks you to solve a industry classification problem for advertising account opening. After thinking, when you finally reach a conclusion, clearly state the primary industry and the secondary industry for account opening and give the reasons for choosing that particular industry within <answer> </answer> tags. i.e., <answer>一级行业：食品；二级行业：营养及健康食品</answer>.\n<|im_end|>\n<|im_start|>user\n{question}\n<|im_end|>\n<|im_start|>assistant\n<think>"""
+    elif template_type == 'r1-distill':
+        prefix = f"""User:{question}\nAssistant: <think>"""
+
     return prefix
+
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--local_dir', default='/Users/wenweili/PycharmProjects/OpenZero/data/open_industry/v3')
+    parser.add_argument('--local_dir', default='/Users/wenweili/PycharmProjects/OpenZero/data/open_industry/v4')
     parser.add_argument('--hdfs_dir', default=None)
     parser.add_argument('--train_data_path', default='/Users/wenweili/Desktop/AI客服/开户行业/妙问开户行业数据集_v4_train.xlsx')
     parser.add_argument('--test_data_path', default='/Users/wenweili/Desktop/AI客服/开户行业/妙问开户行业数据集_v4_test.xlsx')
 
-    parser.add_argument('--template_type', type=str, default='base')
+    parser.add_argument('--template_type', type=str, default='r1-distill')
 
     args = parser.parse_args()
 
