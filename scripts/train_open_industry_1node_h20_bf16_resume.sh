@@ -5,11 +5,11 @@ export NCCL_DEBUG=INFO
 
 export VLLM_ATTENTION_BACKEND=XFORMERS
 DATA_DIR=data/open_industry/v3
-MODEL_PATH=~/models/qwen2.5-7b
+MODEL_PATH=/apdcephfs_cq11/share_2973545/wenweiwwli/projects/OpenZero/checkpoints/GRPO_OPEN_INDUSTRY/1node-Qwen-7B-bf16-v3-mb2-tp1-sp1-roll4-2h20-t0.7/actor/global_step_330
 ROLLOUT_TP_SIZE=1
 n_gpus_per_node=2
 nnodes=1
-experiment_name='1node-Qwen-7B-bf16-v3-mb2-tp1-sp1-roll4-2h20-t1.2'
+experiment_name='1node-resume-stage1step330-v3-mb2-tp1-sp1-roll4-2h20-t1.2'
 
 python3 -m verl.trainer.main_ppo \
     algorithm.adv_estimator=grpo \
@@ -55,4 +55,4 @@ python3 -m verl.trainer.main_ppo \
     trainer.default_hdfs_dir=null \
     trainer.save_freq=30 \
     trainer.test_freq=10 \
-    trainer.total_epochs=5 $@ 2>&1 | tee 7b_open_industry_h20_debug.log
+    trainer.total_epochs=5 $@ 2>&1 | tee $experiment_name.log
