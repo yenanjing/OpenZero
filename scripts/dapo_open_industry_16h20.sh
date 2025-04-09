@@ -40,7 +40,7 @@ overlong_penalty_factor=1.0
 loss_agg_mode="token-mean"
 
 enable_filter_groups=True
-filter_groups_metric=acc
+filter_groups_metric=score
 max_num_gen_batches=10
 train_prompt_bsz=16
 gen_prompt_bsz=$((train_prompt_bsz))
@@ -134,11 +134,11 @@ python3 -m recipe.dapo.src.main_dapo \
     trainer.project_name="${project_name}" \
     trainer.experiment_name="${exp_name}" \
     trainer.n_gpus_per_node=8 \
-    trainer.nnodes="${NNODES}" \
+    trainer.nnodes="${nnodes}" \
     trainer.val_before_train=True \
     trainer.test_freq=10 \
     trainer.save_freq=50 \
     trainer.total_epochs=5 \
     trainer.default_local_dir="${CKPTS_DIR}" \
-    trainer.resume_mode=auto
+    trainer.resume_mode=auto $@ 2>&1 | tee $exp_name.log
 
