@@ -21,13 +21,46 @@ version_folder = os.path.dirname(os.path.join(os.path.abspath(__file__)))
 with open(os.path.join(version_folder, 'verl/version/version')) as f:
     __version__ = f.read().strip()
 
+install_requires = [
+  'accelerate',
+  'codetiming',
+  'datasets',
+  'dill',
+  'hydra-core',
+  'numpy',
+  'pandas',
+  'datasets',
+  'peft',
+  'pyarrow>=15.0.0',
+  'pybind11',
+  'pylatexenc',
+  'ray[default]>=2.10',
+  'tensordict<=0.6.2',
+  'torchdata',
+  'transformers',
+  'wandb',
+]
 
-with open('requirements.txt') as f:
-    required = f.read().splitlines()
-    install_requires = [item.strip() for item in required if item.strip()[0] != '#']
+TEST_REQUIRES = ['pytest', 'yapf', 'py-spy']
+PRIME_REQUIRES = ['pyext']
+GEO_REQUIRES = ['mathruler']
+GPU_REQUIRES = ['liger-kernel', 'flash-attn']
+MATH_REQUIRES = ['math-verify']  # Add math-verify as an optional dependency
+VLLM_REQUIRES = ['tensordict<=0.6.2', 'vllm<=0.8.2']
+SGLANG_REQUIRES = [
+  'tensordict<=0.6.2', 
+  'sglang[all]==0.4.4.post4',
+  'torch-memory-saver>=0.0.5'
+]
 
 extras_require = {
-    'test': ['pytest', 'yapf']
+  'test': TEST_REQUIRES,
+  'prime': PRIME_REQUIRES,
+  'geo': GEO_REQUIRES,
+  'gpu': GPU_REQUIRES,
+  'math': MATH_REQUIRES,
+  'vllm': VLLM_REQUIRES,
+  'sglang': SGLANG_REQUIRES,
 }
 
 from pathlib import Path
@@ -43,7 +76,7 @@ setup(
     license='Apache 2.0',
     author='Bytedance - Seed - MLSys',
     author_email='zhangchi.usc1992@bytedance.com, gmsheng@connect.hku.hk',
-    description='veRL: Volcano Engine Reinforcement Learning for LLM',
+    description='verl: Volcano Engine Reinforcement Learning for LLM',
     install_requires=install_requires,
     extras_require=extras_require,
     package_data={'': ['version/*'],

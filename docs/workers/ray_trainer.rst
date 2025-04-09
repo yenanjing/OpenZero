@@ -12,7 +12,7 @@ Data Preparation
 
 The ``PPORayTrainer``, as a single process, is responsible for loading a
 complete batch of samples (prompts) from the dataset and then dispatch
-to different worker_groups runnning on different GPUs.
+to different worker_groups running on different GPUs.
 
 To generalize the data loading, we implement the ``RLHFDataset`` class
 to load the preprocessed parquet files, apply chat templates to the
@@ -25,7 +25,6 @@ then tokenize.
                                        tokenizer=self.tokenizer,
                                        prompt_key=self.config.data.prompt_key,
                                        max_prompt_length=self.config.data.max_prompt_length,
-                                       filter_prompts=True,
                                        return_raw_chat=self.config.data.get('return_raw_chat', False),
                                        truncation='error')
 
@@ -180,7 +179,7 @@ To extend to other RLHF algorithms, such as DPO, GRPO, please refer to
 
                    # compute rewards. apply_kl_penalty if available
                    batch, kl_metrics = apply_kl_penalty(batch,
-                                                           kl_ctrl=self.kl_ctrl,
+                                                           kl_ctrl=self.kl_ctrl_in_reward,
                                                            kl_penalty=self.config.algorithm.kl_penalty)
                    metrics.update(kl_metrics)
 

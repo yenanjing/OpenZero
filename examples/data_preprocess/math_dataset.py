@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """
-Preprocess the GSM8k dataset to parquet format
+Preprocess the MATH-lighteval dataset to parquet format
 """
 
 import os
@@ -35,8 +35,10 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    data_source = 'lighteval/MATH'
-
+    # 'lighteval/MATH' is no longer available on huggingface.
+    # Use mirror repo: DigitalLearningGmbH/MATH-lighteval
+    data_source = 'DigitalLearningGmbH/MATH-lighteval'
+    print(f"Loading the {data_source} dataset from huggingface...", flush=True)
     dataset = datasets.load_dataset(data_source, trust_remote_code=True)
 
     train_dataset = dataset['train']

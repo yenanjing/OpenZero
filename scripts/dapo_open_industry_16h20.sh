@@ -52,7 +52,6 @@ DATA_DIR=/apdcephfs_cq11/share_2973545/wenweiwwli/projects/OpenZero/data/open_in
 MODEL_PATH=/apdcephfs_cq11/share_2973545/wenweiwwli/models/QwQ_32B/QwQ-32B
 CKPTS_DIR=${CKPTS_DIR:-"/apdcephfs_cq11/share_2973545/wenweiwwli/projects/OpenZero/ckpts/${project_name}/${exp_name}"}
 
-
 # Algorithm
 temperature=1.0
 top_p=1.0
