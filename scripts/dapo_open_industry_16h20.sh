@@ -33,14 +33,14 @@ clip_ratio_high=0.28
 
 max_prompt_length=$((16384))
 max_response_length=$((2048))
-enable_overlong_buffer=True
+enable_overlong_buffer=False
 overlong_buffer_len=$((1024 * 4))
 overlong_penalty_factor=1.0
 
 loss_agg_mode="token-mean"
 
 enable_filter_groups=True
-filter_groups_metric=score
+filter_groups_metric=seq_reward
 max_num_gen_batches=10
 train_prompt_bsz=16
 gen_prompt_bsz=$((train_prompt_bsz))
@@ -135,7 +135,7 @@ python3 -m recipe.dapo.src.main_dapo \
     trainer.experiment_name="${exp_name}" \
     trainer.n_gpus_per_node=8 \
     trainer.nnodes="${nnodes}" \
-    trainer.val_before_train=True \
+    trainer.val_before_train=False \
     trainer.test_freq=10 \
     trainer.save_freq=50 \
     trainer.total_epochs=5 \
