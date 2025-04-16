@@ -46,6 +46,9 @@ def _default_compute_score(data_source, solution_str, ground_truth, extra_info=N
     elif data_source in ['kefu_industry']:
         from . import openindustry_dapo
         res = openindustry_dapo.compute_score(solution_str, ground_truth)
+    elif data_source in ["kefu_rag"]:
+        from . import rag_dapo
+        res = rag_dapo.compute_score(solution_str, ground_truth, extra_info)
     else:
         raise NotImplementedError(f"Reward function is not implemented for {data_source=}")
 

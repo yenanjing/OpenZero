@@ -264,9 +264,10 @@ class RayDAPOTrainer(RayPPOTrainer):
                         actor_output_metrics = reduce_metrics(actor_output.meta_info['metrics'])
                         metrics.update(actor_output_metrics)
 
-                    # reward
-                    reward_metrics = compute_reward_metrics(batch)
-                    metrics.update(reward_metrics)
+                    # open_industry reward
+                    if batch.non_tensor_batch["data_source"] == "kefu_industry":
+                        reward_metrics = compute_reward_metrics(batch)
+                        metrics.update(reward_metrics)
 
                     # validate
                     if self.val_reward_fn is not None and self.config.trainer.test_freq > 0 and \
