@@ -4,7 +4,7 @@ from typing import Dict, Tuple, Optional
 
 from similarities import BertSimilarity
 
-m = BertSimilarity(model_name_or_path="shibing624/text2vec-base-chinese", device="cuda")
+m = BertSimilarity(model_name_or_path="shibing624/text2vec-base-chinese")
 
 
 def parse_model_answer(answer_text: str, do_print: bool) -> Optional[Dict[str, str]]:

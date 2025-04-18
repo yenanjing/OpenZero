@@ -49,9 +49,9 @@ n_resp_per_prompt=4
 train_prompt_mini_bsz=2
 
 # Paths
-DATA_DIR=/apdcephfs_cq11_2973545/share_2973545/wenweiwwli/projects/OpenZero/data/rag/v1
+DATA_DIR=/apdcephfs_cq11_2973545/share_2973545/wenweiwwli/projects/OpenZero/data/rag/v2
 MODEL_PATH=/apdcephfs_cq11_2973545/share_2973545/data/models/Qwen2.5-32B-Instruct
-CKPTS_DIR=${CKPTS_DIR:-"/apdcephfs_cq11/share_2973545/wenweiwwli/projects/OpenZero/ckpts/${project_name}/${exp_name}"}
+CKPTS_DIR=${CKPTS_DIR:-"/apdcephfs_cq11_2973545/share_2973545/wenweiwwli/projects/OpenZero/ckpts/${project_name}/${exp_name}"}
 
 # Algorithm
 temperature=0.7
