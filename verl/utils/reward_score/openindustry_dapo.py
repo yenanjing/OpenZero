@@ -180,8 +180,8 @@ def compute_score(solution_str, ground_truth, method='strict', format_reward=1, 
     """
 
     gt_industry = eval(ground_truth)
-    do_print = 1
-    # do_print = random.randint(1, 64) == 1
+    # do_print = 1
+    do_print = random.randint(1, 64) == 1
 
     if do_print:
         print("\n" + "=" * 80)

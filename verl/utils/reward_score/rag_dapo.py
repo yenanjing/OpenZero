@@ -4,7 +4,7 @@ from typing import Dict, Tuple, Optional
 
 from similarities import BertSimilarity
 
-m = BertSimilarity(model_name_or_path="shibing624/text2vec-base-chinese")
+m = BertSimilarity(model_name_or_path="shibing624/text2vec-base-chinese", device="cuda")
 
 
 def parse_model_answer(answer_text: str, do_print: bool) -> Optional[Dict[str, str]]:
@@ -73,7 +73,7 @@ def extract_solution(solution_str: str) -> Tuple[Optional[str], str]:
     elif "</think>" in solution_str:
         final_answer = processed_str.split("/think")[1].strip()
     else:
-        print("No answer or think tags found")
+        # print("No answer or think tags found")
         return processed_str, processed_str
 
     return final_answer, processed_str
@@ -270,7 +270,8 @@ def extract_links(text):
 
 
 def zipngram(text: str, ngram_size: int):
-    words = text.lower().split()
+    # words = text.lower().split()
+    words = list(text)
     return zip(*[words[i:] for i in range(ngram_size)])
 
 
@@ -317,12 +318,15 @@ def compute_score(solution_str, ground_truth, extra_info):
         rouge_score = rouge_l_similarity['f1']
 
         sentence_similarity = m.similarity(ground_truth, answer_text)
-        semantic_score = sentence_similarity
+        semantic_score = float(sentence_similarity)
 
         pattern = r'[($$](https?://[^\s)$$]+)[)\]]'
         content_all_links = re.findall(pattern, answer_text, re.DOTALL | re.MULTILINE)
         links = list(set(content_all_links))
-        context_links = list(set(re.findall(pattern, extra_info["context"], re.DOTALL | re.MULTILINE)))
+        context = extra_info["context"]
+        if do_print:
+            print(f"\n[Context]\n{context}")
+        context_links = list(set(re.findall(pattern, context, re.DOTALL | re.MULTILINE)))
         ground_truth_links = list(set(re.findall(pattern, ground_truth, re.DOTALL | re.MULTILINE)))
 
         if not context_links:
