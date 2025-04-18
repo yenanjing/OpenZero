@@ -2,9 +2,8 @@ import re
 import random
 from typing import Dict, Tuple, Optional
 
-from similarities import BertSimilarity
+import requests
 
-m = BertSimilarity(model_name_or_path="shibing624/text2vec-base-chinese")
 
 
 def parse_model_answer(answer_text: str, do_print: bool) -> Optional[Dict[str, str]]:
@@ -275,6 +274,20 @@ def zipngram(text: str, ngram_size: int):
     return zip(*[words[i:] for i in range(ngram_size)])
 
 
+def get_similarity(ground_truth, answer_text):
+    url = "http://localhost:8000/similarity"
+    payload = {
+        "ground_truth": ground_truth,
+        "answer_text": answer_text
+    }
+
+    response = requests.post(url, json=payload)
+
+    if response.status_code == 200:
+        return response.json()['similarity_score']
+    else:
+        return {"error": f"Request failed with status code {response.status_code}"}
+
 def compute_score(solution_str, ground_truth, extra_info):
     """The scoring function for open_industry task.
 
@@ -317,19 +330,27 @@ def compute_score(solution_str, ground_truth, extra_info):
         rouge_l_similarity = rouge_l(ground_truth, answer_text)
         rouge_score = rouge_l_similarity['f1']
 
-        sentence_similarity = m.similarity(ground_truth, answer_text)
-        semantic_score = float(sentence_similarity)
+        semantic_score = get_similarity(ground_truth, answer_text)
 
-        pattern = r'[($$](https?://[^\s)$$]+)[)\]]'
-        content_all_links = re.findall(pattern, answer_text, re.DOTALL | re.MULTILINE)
+        pattern = re.compile(
+            r'(?:(?:https?://)|(?:www\.))'  # 匹配 http://, https:// 或 www.
+            r'[^\s<>"\'()\u4e00-\u9fa5]+'  # 匹配 URL 主体（排除空格、<>"'()和中文字符）
+            r'(?=[\s"\'()\u4e00-\u9fa5]|$)',  # 确保 URL 后跟有效终止符
+            re.IGNORECASE
+        )
+
+        # pattern = r'[($$](https?://[^\s)$$]+)[)\]]'
+        content_all_links = pattern.findall(answer_text)
         links = list(set(content_all_links))
         context = extra_info["context"]
         if do_print:
             print(f"\n[Context]\n{context}")
-        context_links = list(set(re.findall(pattern, context, re.DOTALL | re.MULTILINE)))
-        ground_truth_links = list(set(re.findall(pattern, ground_truth, re.DOTALL | re.MULTILINE)))
+        context_links = list(set(pattern.findall(context)))
+        ground_truth_links = list(set(pattern.findall(ground_truth)))
 
         if not context_links:
+            if do_print:
+                print("no context links")
             link_score = max(-1.0, -0.5 * len(content_all_links)) if links else 1.0
         else:
             # # 漏召回
