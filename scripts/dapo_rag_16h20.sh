@@ -14,11 +14,12 @@ export NCCL_MIN_NRINGS=1
 export NCCL_IB_GID_INDEX=3
 export GLOO_SOCKET_IFNAME=bond1
 export VLLM_ATTENTION_BACKEND=XFORMERS
+export NCCL_P2P_DISABLE=1
 n_gpus_per_node=8
 nnodes=2
 
 
-exp_name='dapo-16h20-Qwen-32B-v1-tp8-sp8-roll4-t1.0-r2k'
+exp_name='dapo-16h20-Qwen-32B-v1-tp8-sp8-roll4-t0.7-r2k'
 project_name='KEFU_RAG'
 
 adv_estimator=grpo
@@ -48,12 +49,12 @@ n_resp_per_prompt=4
 train_prompt_mini_bsz=2
 
 # Paths
-DATA_DIR=/apdcephfs_cq11/share_2973545/wenweiwwli/projects/OpenZero/data/rag/v1
-MODEL_PATH=/apdcephfs_cq11/share_2973545/data/models/Qwen2.5-32B-Instruct
+DATA_DIR=/apdcephfs_cq11_2973545/share_2973545/wenweiwwli/projects/OpenZero/data/rag/v1
+MODEL_PATH=/apdcephfs_cq11_2973545/share_2973545/data/models/Qwen2.5-32B-Instruct
 CKPTS_DIR=${CKPTS_DIR:-"/apdcephfs_cq11/share_2973545/wenweiwwli/projects/OpenZero/ckpts/${project_name}/${exp_name}"}
 
 # Algorithm
-temperature=1.0
+temperature=0.7
 top_p=1.0
 top_k=-1 # 0 for HF rollout, -1 for vLLM rollout
 

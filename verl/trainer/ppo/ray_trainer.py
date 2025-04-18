@@ -374,7 +374,7 @@ def compute_reward_metrics(batch):
     reward_metrics["reward/all_correct_ratio"] = all_correct.detach().item()
     # Calculate format_error ratio (value == -0.5)
     format_error = torch.sum(reward_tensor == -0.5).float() / reward_tensor.numel()
-    reward_metrics["reward/format_error_ratio"] = format_error.detach().item()
+    reward_metrics["reward/all_error_ratio"] = format_error.detach().item()
     # Calculate first_correct answer ratio (value == 1.5 or 3)
     first_correct = torch.sum((reward_tensor == 2.5) | (reward_tensor == 3)).float() / reward_tensor.numel()
     reward_metrics["reward/first_correct_ratio"] = first_correct.detach().item()

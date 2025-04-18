@@ -18,7 +18,7 @@ n_gpus_per_node=8
 nnodes=2
 
 
-exp_name='dapo-16h20-QwQ-32B-v3-tp8-sp8-roll4-t1.0-r2k'
+exp_name='dapo-16h20-QwQ-32B-v5-tp8-sp8-roll4-t0.7-r2k'
 project_name='GRPO_OPEN_INDUSTRY'
 
 adv_estimator=grpo
@@ -48,12 +48,12 @@ n_resp_per_prompt=4
 train_prompt_mini_bsz=2
 
 # Paths
-DATA_DIR=/apdcephfs_cq11/share_2973545/wenweiwwli/projects/OpenZero/data/open_industry/v3
+DATA_DIR=/apdcephfs_cq11/share_2973545/wenweiwwli/projects/OpenZero/data/open_industry/v5
 MODEL_PATH=/apdcephfs_cq11/share_2973545/wenweiwwli/models/QwQ_32B/QwQ-32B
 CKPTS_DIR=${CKPTS_DIR:-"/apdcephfs_cq11/share_2973545/wenweiwwli/projects/OpenZero/ckpts/${project_name}/${exp_name}"}
 
 # Algorithm
-temperature=1.0
+temperature=0.7
 top_p=1.0
 top_k=-1 # 0 for HF rollout, -1 for vLLM rollout
 

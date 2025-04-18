@@ -265,7 +265,7 @@ class RayDAPOTrainer(RayPPOTrainer):
                         metrics.update(actor_output_metrics)
 
                     # open_industry reward
-                    if batch.non_tensor_batch["data_source"] == "kefu_industry":
+                    if (batch.non_tensor_batch["data_source"] == "kefu_industry").any():
                         reward_metrics = compute_reward_metrics(batch)
                         metrics.update(reward_metrics)
 
