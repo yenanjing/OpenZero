@@ -28,10 +28,10 @@ def make_prefix(dp, template_type):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--local_dir', default='/Users/wenweili/PycharmProjects/OpenZero/data/rag/v1')
+    parser.add_argument('--local_dir', default='/Users/wenweili/PycharmProjects/OpenZero/data/rag/v2')
     parser.add_argument('--hdfs_dir', default=None)
     parser.add_argument('--train_data_path', default='/Users/wenweili/Desktop/AI客服/RAG训练/data/rag_train_dsr1_ans_20240317_v2.xlsx')
-    parser.add_argument('--test_data_path', default='/Users/wenweili/Desktop/AI客服/RAG训练/data/rag_test_0220_n100_v1.xlsx')
+    parser.add_argument('--test_data_path', default='/Users/wenweili/Desktop/AI客服/RAG训练/data/rag_test_0220_n100_v2.xlsx')
 
     parser.add_argument('--template_type', type=str, default='answer')
 
@@ -89,7 +89,7 @@ if __name__ == '__main__':
                 "extra_info": {
                     'split': split,
                     'index': idx,
-                    "context": question
+                    "context": example["input"]
                 }
             }
             return data
